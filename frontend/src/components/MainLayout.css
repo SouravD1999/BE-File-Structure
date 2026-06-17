@@ -1,0 +1,8 @@
+.app-container { display: flex; flex-direction: column; h-min: 100vh; height: 100vh; }
+.top-nav { height: 60px; background: #fff; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; padding: 0 24px; font-weight: bold; }
+.layout-body { display: flex; flex: 1; overflow: hidden; }
+.left-nav { width: 240px; background: var(--bg-sidebar); display: flex; flex-direction: column; justify-content: space-between; padding: 24px 16px; }
+.left-nav nav a { display: flex; align-items: center; gap: 12px; color: #94a3b8; text-decoration: none; padding: 12px; border-radius: 6px; margin-bottom: 8px; }
+.left-nav nav a:hover { background: #1e293b; color: var(--text-light); }
+.logout-btn { display: flex; align-items: center; gap: 12px; background: #ef4444; color: white; border: none; padding: 12px; border-radius: 6px; cursor: pointer; }
+.content-area { flex: 1; padding: 32px; overflow-y: auto; background: var(--bg-main); }
