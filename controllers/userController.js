@@ -1,5 +1,5 @@
 const User = require('../models/user');
-const jwt = require('jsonwebtoken'); 
+const jwt = require('jsonwebtoken');
 const { JWT_SECRET } = require('../config/config');
 
 // 1. READ (Get All Users) - Existing
@@ -18,8 +18,8 @@ const createUser = async (req, res) => {
     if (!req.body || Object.keys(req.body).length === 0) {
       return res.status(400).json({ message: 'Body parsing failed. Send JSON format.' });
     }
-    const { name, email } = req.body;
-    const newUser = new User({ name, email }); 
+    const { name, email, role } = req.body;
+    const newUser = new User({ name, email, role });
     await newUser.save();
     res.status(201).json({ message: 'Saved to local MongoDB!', data: newUser });
   } catch (error) {
@@ -31,7 +31,9 @@ const createUser = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const { id } = req.params; // Grabs the ID from the URL path parameter
-    const { name, email } = req.body; // Grabs the new data to apply
+    const { name, email, role } = req.body; // Grabs the new data to apply
+
+    const newUser = new User({ name, email, role });
 
     // { new: true } forces MongoDB to return the updated document rather than the old one
     const updatedUser = await User.findByIdAndUpdate(id, { name, email }, { new: true });
@@ -76,7 +78,8 @@ const loginUser = async (req, res) => {
     // 2. Create a JWT Token payload containing user data
     const payload = {
       id: user._id,
-      email: user.email
+      email: user.email,
+      role: user.role
     };
 
     // 3. Sign the token (it expires in 1 hour)

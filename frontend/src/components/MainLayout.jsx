@@ -5,7 +5,7 @@ import { FiGrid, FiUsers, FiUpload, FiLogOut, FiUserCheck } from 'react-icons/fi
 import './MainLayout.css';
 
 export default function MainLayout() {
-  const { logout } = useAuth();
+  const { logout, user } = useAuth(); // 💡 Destructure the logged-in user context
   const navigate = useNavigate();
 
   return (
@@ -14,7 +14,8 @@ export default function MainLayout() {
       <header className="top-nav">
         <div className="logo">TCS Enterprise Portal</div>
         <div className="user-profile">
-          <FiUserCheck style={{ marginRight: '8px' }} /> Satyabrata M.
+          <FiUserCheck style={{ marginRight: '8px' }} /> 
+          {user?.email} ({user?.role}) {/* Displays logged-in role dynamically */}
         </div>
       </header>
 
@@ -24,14 +25,18 @@ export default function MainLayout() {
           <nav>
             <Link to="/"><FiGrid /> Dashboard</Link>
             <Link to="/users"><FiUsers /> User Management</Link>
-            <Link to="/upload"><FiUpload /> Media Upload</Link>
+            
+            {/* 💡 Manager-Only Menu View Condition */}
+            {user?.role === 'Manager' && (
+              <Link to="/upload"><FiUpload /> Media Upload</Link>
+            )}
           </nav>
           <button onClick={() => { logout(); navigate('/login'); }} className="logout-btn">
             <FiLogOut /> Logout
           </button>
         </aside>
 
-        {/* DYNAMIC CONTENT CONTENT SCREEN AREA */}
+        {/* DYNAMIC CONTENT SCREEN AREA */}
         <main className="content-area">
           <Outlet />
         </main>

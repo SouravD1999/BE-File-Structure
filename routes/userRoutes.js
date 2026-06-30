@@ -3,21 +3,24 @@ const router = express.Router();
 const userController = require('../controllers/userController');
 const authMiddleware = require('../middlewares/authMiddleware');
 const upload = require('../middlewares/uploadMiddleware');
-
+const roleMiddleware = require('../middlewares/roleMiddleware');
 
 router.post('/login', userController.loginUser);
 
-// 🟢 READ Operation
-router.get('/', userController.getAllUsers);
+// 🟢 Both Admin and Manager can View (READ)
+router.get('/', authMiddleware, roleMiddleware(['Admin', 'Manager']), userController.getAllUsers);
 
-// 🔵 CREATE Operation (Protected by your JWT middleware)
-router.post('/', authMiddleware, userController.createUser);
+// 🔵 Only Manager can Create (CREATE)
+router.post('/', authMiddleware, roleMiddleware(['Manager']), userController.createUser);
 
-// 🟡 UPDATE Operation (Requires JWT + user ID in URL)
-router.put('/:id', authMiddleware, userController.updateUser);
+// 🟡 Only Manager can Update (UPDATE)
+router.put('/:id', authMiddleware, roleMiddleware(['Manager']), userController.updateUser);
 
-// 🔴 DELETE Operation (Requires JWT + user ID in URL)
-router.delete('/:id', authMiddleware, userController.deleteUser);
+// 📸 Only Manager can Upload (UPLOAD)
+router.post('/upload', authMiddleware, roleMiddleware(['Manager']), upload.single('image'));
+
+// 🔴 Only Admin can Delete (DELETE)
+router.delete('/:id', authMiddleware, roleMiddleware(['Admin']), userController.deleteUser);
 
 
 router.post('/upload', authMiddleware, upload.single('image'), (req, res) => {
